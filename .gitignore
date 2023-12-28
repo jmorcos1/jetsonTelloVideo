@@ -4,3 +4,4 @@ build/
 dist/
 docs/_build/
 examples/h264_frames_to_cuda/
+.ipynb_checkpoints/

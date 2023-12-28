@@ -1,5 +1,5 @@
 try:
-    import jetson_utils
+    import jetson.utils
 except ImportError:
     print('ImportError - failed to import jetson.utils')
     print('Please visit https://github.com/dusty-nv/jetson-inference and follow the instructions to build and install')
