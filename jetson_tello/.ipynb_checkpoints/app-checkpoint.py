@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from .video import h264_frame_to_cuda, decoded_frame_to_cuda, DecodedFrame, H264DecoderAsync, decode_h264_frame, decoded_frame_to_numpy_array
+from .coco import get_coco_class, get_coco_class_by_id, get_coco_class_by_name
 
 import asyncio
 from inspect import iscoroutinefunction
@@ -7,6 +9,17 @@ from tello_asyncio import Tello
 #from tello_asyncio_video import run_tello_video_app
 #JM----------------------
 # tello_asyncio_video.app ****************************
+
+# def decoded_frame_to_cuda(decoded_frame):
+#     '''
+#     Loads frame data into CUDA memory.
+
+#     :param decoded_frame:
+#     :type decoded_frame: :class:`tello_asyncio_video.DecodedFrame`
+#     :rtype: :class:`cudaImage`
+#     '''
+#     numpy_array = decoded_frame_to_numpy_array(decoded_frame)
+#     return jetson.utils.cudaFromNumpy(numpy_array)
 
 #this is a hack:
 import nest_asyncio
@@ -30,9 +43,13 @@ def run_tello_video_app(fly,
             await drone.wifi_wait_for_network()
     
         await drone.connect()
+        
+        print('[main] CONNECTED')
 
         #begin video stream
         await drone.start_video()
+        
+        print('[main] VIDEO_STARTED')
 
         decoder = H264DecoderAsync()
 
@@ -140,10 +157,14 @@ def run_jetson_tello_app(fly, process_frame, drone=None, on_frame_decoded=None, 
     async def process_cuda_frame(drone, frame, cuda=None):
         # load frame image into CUDA memory
         try:
+            print('try Get Cuda')
             cuda = decoded_frame_to_cuda(frame)
+            print('got CUDA -shape:', cuda.shape)
         except Exception as e:
             #continue
             #JM
+            #debug
+            print(f'[decodedFrameToCuda] ERROR {e}')
             pass
 
         # call callback
